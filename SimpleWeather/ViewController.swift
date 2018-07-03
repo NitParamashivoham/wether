@@ -12,7 +12,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     
     //Outlets
-
+    @IBOutlet weak var viewTap: UIView!
     @IBOutlet weak var background: UIImageView!
     @IBOutlet weak var cloudyLabel: UILabel!
     @IBOutlet weak var qutoeMainLabel: UILabel!
@@ -20,6 +20,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var quoteLabel: UILabel!
     @IBOutlet weak var weatherLabel: UILabel!
     
+    @IBOutlet weak var dayOfWeek: UILabel!
     
     // Constants
     
@@ -29,20 +30,39 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     //Variables
     var currentWeather: CurrentWeather!
     var currentLocation: CLLocation!
-    
+    var tapGesture = UITapGestureRecognizer()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //Gradient background
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = self.view.bounds
+        gradientLayer.colors = [UIColor.purpleEnd.cgColor, UIColor.purpleStart.cgColor]
+        gradientLayer.locations = [0.0, 1.0]
+        self.view.layer.insertSublayer(gradientLayer, at: 0)
+        
+        
         // Do any additional setup after loading the view, typically from a nib.
         applyEffect()
         setupLocation()
         callDelegate()
         
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(myviewTapped(_:)))
+        tapGesture.numberOfTapsRequired = 1
+        tapGesture.numberOfTouchesRequired = 1
+        viewTap.addGestureRecognizer(tapGesture)
+        viewTap.isUserInteractionEnabled = true
+
+        
         currentWeather = CurrentWeather()
         
-    
         
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE"
+        let str = dateFormatter.string(from: Date())
+        dayOfWeek.text = "\(str)".uppercased()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -98,6 +118,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
+    // Calling Tap
+    @objc func myviewTapped(_ sender: UITapGestureRecognizer) {
+        
+        
+        let homeView = self.storyboard?.instantiateViewController(withIdentifier: "SecondVC") as! Second
+        homeView.modalTransitionStyle = .crossDissolve
+        present(homeView, animated: true, completion: nil)
+        
+    }
     
     // Parallax
     
@@ -129,7 +158,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     func updateUI(){
         
         locationLabel.text = currentWeather.cityName
-        cloudyLabel.text = currentWeather.weatherType
+        cloudyLabel.text = currentWeather.weatherType.uppercased()
         weatherLabel.text = "\(Int(currentWeather.currentTemp))"
     }
 

@@ -10,6 +10,7 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
+
 class CurrentWeather {
     
     private var _cityName: String!
@@ -44,13 +45,17 @@ class CurrentWeather {
     /// Downloading Current Weather Data
     ///
     /// - Parameter completed: Completion Handler.
+    
+    
     func downloadCurrentWeather(completed: @escaping DownloadComplete){
+        
+        if Connectivity.isConnectedToInternet() {
         Alamofire.request(API_URL).responseJSON { (response) in
             //print(response)
             //print(response)
             let result = response.result
             //print(result.value)
-            let json = JSON(result.value)
+            let json = JSON(result.value!)
             self._cityName = json["name"].stringValue
             
             self._weatherType = json["weather"][0]["main"].stringValue
@@ -59,7 +64,9 @@ class CurrentWeather {
             completed()
         }
         
-    }
+        }}
+    
+    
     
     
     

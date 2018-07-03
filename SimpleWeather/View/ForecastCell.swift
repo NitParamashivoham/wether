@@ -10,10 +10,15 @@ import UIKit
 
 class ForecastCell: UITableViewCell {
 
+   
     
     //Outlets
     @IBOutlet weak var forecastDay: UILabel!
-    @IBOutlet weak var forecastTemp: UILabel!
+    @IBOutlet weak var forecastTemp: UILabel! //Min temp
+    @IBOutlet weak var forecastMax: UILabel!  //Max temp
+   
+    
+    
     
     
     
@@ -32,6 +37,9 @@ class ForecastCell: UITableViewCell {
     
     func configureCell(forecastData: ForecastWeather)   {
         self.forecastDay.text = "\(forecastData.date)"
-        self.forecastTemp.text = "\(Int(forecastData.temp))"
+        self.forecastTemp.text = "\(Int(forecastData.temp))↓"
+        self.forecastMax.text = "\(Int(forecastData.max))↑"
+        
+        
     }
 }
