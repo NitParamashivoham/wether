@@ -15,11 +15,12 @@ extension Date {
 class Second: UIViewController {
 
     
+    
     @IBOutlet weak var dateLabel: UILabel!
     //Outlets
     @IBOutlet weak var monthLabel: UILabel!
   
-    
+    @IBOutlet weak var background: UIImageView!
     @IBOutlet weak var tableVIew: UITableView!
     @IBOutlet weak var viewTap: UIView!
      
@@ -61,13 +62,27 @@ class Second: UIViewController {
         
         
         
+        let remoteImageURL = URL(string: "https://source.unsplash.com/daily?weather")!
         
+        // Use Alamofire to download the image
+        Alamofire.request(remoteImageURL).responseData { (response) in
+            if response.error == nil {
+                print(response.result)
+                
+                // Show the downloaded image:
+                if let data = response.data {
+                    self.background.image = UIImage(data: data)
+                    
+                }
+            }
+        }
         //let now = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "LLLL"
         let nameOfMonth = dateFormatter.string(from: now)
         
         monthLabel.text = "\(nameOfMonth)".uppercased()
+        applyEffect()
         
         // Tapp
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(myviewTapped(_:)))
@@ -143,6 +158,29 @@ extension Second: UITableViewDelegate, UITableViewDataSource
     
    
     
+    func applyEffect(){
+        
+        slideEffect(view: background, intensity: 45)
+        
+        
+    }
+    
+    func slideEffect( view: UIView, intensity: Double)
+    {
+        let horizontal = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
+        
+        horizontal.minimumRelativeValue =  -intensity
+        horizontal.maximumRelativeValue = intensity
+        
+        let vertical = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
+        vertical.minimumRelativeValue = -intensity
+        vertical.maximumRelativeValue = intensity
+        
+        //attaching both axis
+        let movement = UIMotionEffectGroup()
+        movement.motionEffects = [horizontal, vertical]
+        view.addMotionEffect(movement)
+    }
     
     
     func  downloadForecastWeather(completed: @escaping DownloadComplete){

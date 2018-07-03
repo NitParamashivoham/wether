@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6DAA21CC20E759B200132EC8 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DAA21CB20E759B200132EC8 /* Color.swift */; };
 		6DAA21D020E75B2400132EC8 /* Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DAA21CF20E75B2400132EC8 /* Connectivity.swift */; };
+		6DAA21D220EB594700132EC8 /* DailyQuotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DAA21D120EB594700132EC8 /* DailyQuotes.swift */; };
 		6DADF99D20E4B82300F8C10A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DADF99C20E4B82300F8C10A /* AppDelegate.swift */; };
 		6DADF99F20E4B82300F8C10A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DADF99E20E4B82300F8C10A /* ViewController.swift */; };
 		6DADF9A220E4B82300F8C10A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DADF9A020E4B82300F8C10A /* Main.storyboard */; };
@@ -29,6 +30,7 @@
 		5B16F69AB7047BD46EE325C9 /* Pods-SimpleWeather.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleWeather.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimpleWeather/Pods-SimpleWeather.release.xcconfig"; sourceTree = "<group>"; };
 		6DAA21CB20E759B200132EC8 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		6DAA21CF20E75B2400132EC8 /* Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
+		6DAA21D120EB594700132EC8 /* DailyQuotes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyQuotes.swift; sourceTree = "<group>"; };
 		6DADF99920E4B82300F8C10A /* SimpleWeather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleWeather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DADF99C20E4B82300F8C10A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6DADF99E20E4B82300F8C10A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				6DB119D220E56FB100784E56 /* CurrentWeather.swift */,
 				6DCAB1AB20E5CBFF0053AB9D /* Location.swift */,
 				6DCAB1B220E662140053AB9D /* ForecastWeather.swift */,
+				6DAA21D120EB594700132EC8 /* DailyQuotes.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -261,6 +264,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DAA21D220EB594700132EC8 /* DailyQuotes.swift in Sources */,
 				6DCAB1B320E662140053AB9D /* ForecastWeather.swift in Sources */,
 				6DCAB1AA20E5B0280053AB9D /* Extensions.swift in Sources */,
 				6DADF99F20E4B82300F8C10A /* ViewController.swift in Sources */,

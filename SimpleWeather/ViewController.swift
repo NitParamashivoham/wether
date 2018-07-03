@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreLocation
+import Alamofire
+
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
     
@@ -19,6 +21,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var quoteLabel: UILabel!
     @IBOutlet weak var weatherLabel: UILabel!
+    @IBOutlet weak var authorLabel: UILabel!
     
     @IBOutlet weak var dayOfWeek: UILabel!
     
@@ -29,6 +32,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     //Variables
     var currentWeather: CurrentWeather!
+    var dailyQuotes: DailyQuotes!
     var currentLocation: CLLocation!
     var tapGesture = UITapGestureRecognizer()
     
@@ -44,6 +48,28 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         self.view.layer.insertSublayer(gradientLayer, at: 0)
         
         
+        let remoteImageURL = URL(string: "https://source.unsplash.com/daily?weather")!
+        
+                 // Use Alamofire to download the image
+                 Alamofire.request(remoteImageURL).responseData { (response) in
+                         if response.error == nil {
+                                 print(response.result)
+                
+                                 // Show the downloaded image:
+                                 if let data = response.data {
+                                         self.background.image = UIImage(data: data)
+                                    
+                                     }
+                             }
+        }
+        
+        
+        //Download quotes
+        
+       
+        
+        
+        
         // Do any additional setup after loading the view, typically from a nib.
         applyEffect()
         setupLocation()
@@ -57,8 +83,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 
         
         currentWeather = CurrentWeather()
-        
-        
+        dailyQuotes = DailyQuotes()
+        dailyQuotes.downloadQuotes {
+            self.updateQuotesUI()
+        }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE"
         let str = dateFormatter.string(from: Date())
@@ -89,6 +117,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func locationAuthCheck() {
+        
        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse
        {
         //Get location from the device
@@ -98,13 +127,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         Location.sharedInstance.latidue = currentLocation.coordinate.latitude
         Location.sharedInstance.longitude = currentLocation.coordinate.longitude
         
+      
+        
+        
+        
+        
         // Dwload API data
         currentWeather.downloadCurrentWeather {
             
             
             //Update UI after downloading
-            self.updateUI()
-        }
+            self.updateUI()       }
         
         
         
@@ -159,9 +192,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
         locationLabel.text = currentWeather.cityName
         cloudyLabel.text = currentWeather.weatherType.uppercased()
+        weatherLabel.isEnabled = true
         weatherLabel.text = "\(Int(currentWeather.currentTemp))"
+        
     }
 
 
+   func  updateQuotesUI(){
+   quoteLabel.text = dailyQuotes.quotes
+    authorLabel.text = dailyQuotes.author
+    }
+    
 }
+
+
+
 
