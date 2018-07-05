@@ -43,11 +43,7 @@ class Second: UIViewController {
      */
         callDelegate()
        
-        // Declare an observer for UIApplicationDidBecomeActive
-        NotificationCenter.default.addObserver(self, selector: #selector(scheduleTimer), name:  .UIApplicationDidBecomeActive, object: nil)
-        
-        // change the background each time the view is opened
-        changeBackground()
+       
         
         
         // function which is triggered when handleTap is called
@@ -97,10 +93,16 @@ class Second: UIViewController {
     // Calling Tap
     @objc func myviewTapped(_ sender: UITapGestureRecognizer) {
         
-       
+       // MARK - Tatpic feedback
+        
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.prepare()
+        
+        
         let homeView = self.storyboard?.instantiateViewController(withIdentifier: "FirstVC") as! ViewController
         homeView.modalTransitionStyle = .crossDissolve
         present(homeView, animated: true, completion: nil)
+        generator.impactOccurred()
 
     }
     
@@ -118,26 +120,10 @@ class Second: UIViewController {
     }
     
     
-    // Changing backgound color
-    @objc func scheduleTimer() {
-        // schedule the timer
-        timer = Timer(fireAt: Calendar.current.nextDate(after: Date(), matching: DateComponents(hour: 6..<21 ~= Date().hour ? 21 : 6), matchingPolicy: .nextTime)!, interval: 0, target: self, selector: #selector(changeBackground), userInfo: nil, repeats: false)
-        print(timer.fireDate)
-        RunLoop.main.add(timer, forMode: .commonModes)
-        print("new background chenge scheduled at:", timer.fireDate.description(with: .current))
-    }
+  
     
-    @objc func changeBackground(){
-        // check if day or night shift
-        self.view.backgroundColor =  6..<21 ~= Date().hour ? UIColor.init(patternImage: #imageLiteral(resourceName: "day")) :  UIColor.init(patternImage: #imageLiteral(resourceName: "night"))
-        
-        // schedule the timer
-        scheduleTimer()
-    }
     
-   
 }
-
 extension Second: UITableViewDelegate, UITableViewDataSource
 {
     func numberOfSections(in tableView: UITableView) -> Int {

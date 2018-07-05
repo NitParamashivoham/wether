@@ -9,22 +9,40 @@
 import UIKit
 import CoreLocation
 import Alamofire
-
+import GhostTypewriter
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
     
     //Outlets
+   
+    @IBAction func infoButton(_ sender: UIButton) {
+        let gestureTap = UIImpactFeedbackGenerator(style: .medium)
+        gestureTap.impactOccurred()
+        
+    }
+    @IBAction func shareButton(_ sender: UIButton) {
+        let gestureTap1 = UIImpactFeedbackGenerator(style: .medium)
+        gestureTap1.impactOccurred()
+        
+    }
+    @IBAction func settingsButton(_ sender: UIButton) {
+        let gestureTap2 = UIImpactFeedbackGenerator(style: .medium)
+        gestureTap2.impactOccurred()
+        
+        
+    }
     @IBOutlet weak var viewTap: UIView!
     @IBOutlet weak var background: UIImageView!
     @IBOutlet weak var cloudyLabel: UILabel!
     @IBOutlet weak var qutoeMainLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
-    @IBOutlet weak var quoteLabel: UILabel!
-    @IBOutlet weak var weatherLabel: UILabel!
+    @IBOutlet weak var quoteLabel: TypewriterLabel!
+    @IBOutlet weak var weatherLabel: TypewriterLabel!
     @IBOutlet weak var authorLabel: UILabel!
     
     @IBOutlet weak var dayOfWeek: UILabel!
-    
+   
+   
     // Constants
     
     let locationManager = CLLocationManager()
@@ -40,6 +58,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        quoteLabel.typingTimeInterval = 0.1
         //Gradient background
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = self.view.bounds
@@ -154,10 +173,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     // Calling Tap
     @objc func myviewTapped(_ sender: UITapGestureRecognizer) {
         
-        
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.prepare()
         let homeView = self.storyboard?.instantiateViewController(withIdentifier: "SecondVC") as! Second
         homeView.modalTransitionStyle = .crossDissolve
         present(homeView, animated: true, completion: nil)
+        generator.impactOccurred()
         
     }
     
@@ -192,16 +213,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
         locationLabel.text = currentWeather.cityName
         cloudyLabel.text = currentWeather.weatherType.uppercased()
-        weatherLabel.isEnabled = true
+       
         weatherLabel.text = "\(Int(currentWeather.currentTemp))"
-        
+         weatherLabel.startTypewritingAnimation(completion: nil)
     }
 
 
    func  updateQuotesUI(){
    quoteLabel.text = dailyQuotes.quotes
+    quoteLabel.startTypewritingAnimation(completion: nil)
+    
     authorLabel.text = dailyQuotes.author
     }
+    
+    @IBAction func shareB(_ sender: UIButton) {
+        let activityVC = UIActivityViewController(activityItems: [ self.quoteLabel.text, self.authorLabel.text], applicationActivities: nil)
+        activityVC.popoverPresentationController?.sourceView = self.view
+        self.present(activityVC, animated: true, completion:  nil)
+        
+    }
+    
+    //share
+    
+    
     
 }
 
