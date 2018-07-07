@@ -46,7 +46,7 @@ class DailyQuotes {
                 //print(response)
                 //print(response)
                 let result = response.result
-                print(result.value)
+                print(result.value!)
                 let json = JSON(result.value!)
              //   self._cityName = json["name"].stringValue
                 

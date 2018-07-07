@@ -10,11 +10,29 @@ import UIKit
 import CoreLocation
 import Alamofire
 import GhostTypewriter
-class ViewController: UIViewController, CLLocationManagerDelegate {
+import MessageUI
+class ViewController: UIViewController, CLLocationManagerDelegate, MFMailComposeViewControllerDelegate {
     
     
     //Outlets
    
+    @IBOutlet weak var blackView: UIView!
+    
+    @IBOutlet weak var viewMain: UIView!
+    
+    
+    
+    @IBAction func settingButton(_ sender: UIButton) {
+        blackView.isHidden = false
+        viewMain.isHidden = false
+        
+        
+        blackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
+        
+        
+        
+    }
+    
     @IBAction func infoButton(_ sender: UIButton) {
         let gestureTap = UIImpactFeedbackGenerator(style: .medium)
         gestureTap.impactOccurred()
@@ -58,7 +76,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        quoteLabel.typingTimeInterval = 0.1
+        quoteLabel.typingTimeInterval = 0.0
         //Gradient background
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = self.view.bounds
@@ -162,10 +180,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
         
         }
-       else{  //User refused
+       else if (CLLocationManager.authorizationStatus() == .denied) {
+        let alert = UIAlertController(title: "Need Authorization", message: "This app requires location to show weather, open settings to allow and then relaunch app after closing it.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { _ in
+            let url = URL(string: UIApplicationOpenSettingsURLString)!
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }))
+        self.present(alert, animated: true, completion: nil)
         
+       
+       }
+       else {  //User refused
+       
         locationManager.requestWhenInUseAuthorization()  //  Prompting again
-        locationAuthCheck() //Check
+       locationAuthCheck() //Check
         
         }
     }
@@ -227,13 +256,99 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     @IBAction func shareB(_ sender: UIButton) {
-        let activityVC = UIActivityViewController(activityItems: [ self.quoteLabel.text, self.authorLabel.text], applicationActivities: nil)
+        let activityVC = UIActivityViewController(activityItems: [ self.quoteLabel.text!, self.authorLabel.text!], applicationActivities: nil)
         activityVC.popoverPresentationController?.sourceView = self.view
         self.present(activityVC, animated: true, completion:  nil)
         
     }
     
-    //share
+    //handleDismiss - for app to go bk to main
+    @objc func handleDismiss()  {
+        UIView.animate(withDuration: 0.5){
+            self.blackView.alpha=0
+           self.viewMain.alpha = 0
+        }
+    }
+    
+    
+    // MARK - Settngs> ViewMain - acttions > Shareapp, feedback, Rateus
+    
+    
+    
+    //Share app
+    @IBAction func shareApp(_ sender: UIButton) {
+        //Set the default sharing message.
+        let message = "Check out Zen Forecast. A minimalistic weather app with daily quotes and beautiful image."
+        //Set the link to share.
+        if let link = NSURL(string: "http://zenforecast.cf")
+        {
+            let objectsToShare = [message,link] as [Any]
+            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+            activityVC.excludedActivityTypes = [UIActivityType.airDrop, UIActivityType.addToReadingList]
+            self.present(activityVC, animated: true, completion: nil)
+        }
+    }
+    
+    // Feedback
+    
+    
+    @IBAction func feedbackButton(_ sender: UIButton) {
+        let mailComposeViewController = configuredMailComposeViewController()
+        if MFMailComposeViewController.canSendMail() {
+            self.present(mailComposeViewController, animated: true, completion: nil)
+        } else {
+            self.showSendMailErrorAlert()
+        }
+        
+    }
+    
+    
+    func configuredMailComposeViewController() -> MFMailComposeViewController {
+        let mailComposerVC = MFMailComposeViewController()
+        mailComposerVC.mailComposeDelegate = self // Extremely important to set the --mailComposeDelegate-- property, NOT the --delegate-- property
+        
+        mailComposerVC.setToRecipients(["cosmicmediadev@gmail.com"])
+        mailComposerVC.setSubject("Feedback for ZenForecast")
+        mailComposerVC.setMessageBody("I've been using app and like to say that ", isHTML: false)
+        
+        return mailComposerVC
+    }
+    
+    func showSendMailErrorAlert() {
+        
+        let sendMailError = UIAlertController(title: "Could not send Email", message: " Your device could not send e-mail. Please check email configuration and try again.", preferredStyle: .actionSheet)
+        
+        
+        
+        sendMailError.show(sendMailError, sender: self)
+    }
+    
+    // MARK: MFMailComposeViewControllerDelegate Method
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+    
+    
+    
+    
+    
+    
+    //Rate app
+    
+    @IBAction func rateButton(_ sender: UIButton) {
+        rateApp(appId: "")
+    }
+    fileprivate func rateApp(appId: String) {
+        openUrl("itms-apps://itunes.apple.com/app/" + appId)
+    }
+    fileprivate func openUrl(_ urlString:String) {
+        let url = URL(string: urlString)!
+        if #available(iOS 10.0, *) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            UIApplication.shared.openURL(url)
+        }
+    }
     
     
     
